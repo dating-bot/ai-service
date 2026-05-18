@@ -1,0 +1,104 @@
+[project]
+name = "ai-service"
+dynamic = ["version"]
+description = "ai service"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "pydantic>=2.12.5",
+    "pydantic-settings>=2.12.0",
+    "structlog>=25.5.0",
+    "dishka>=1.7.2",
+    "alembic>=1.17.2",
+    "asyncpg>=0.31.0",
+    "sqlalchemy[asyncio]>=2.0.45",
+    "grpclib[protobuf]>=0.4.9",
+    "aio-pika>=9.6.1",
+    "celery[redis]>=5.4.0",
+    "aioboto3>=14.0.0",
+    "httpx>=0.28.1",
+    "pgvector>=0.4.1",
+    "pytest>=9.0.3",
+    "pytest-asyncio>=0.23.0",
+    "opentelemetry-api>=1.29.0",
+    "opentelemetry-sdk>=1.29.0",
+    "opentelemetry-exporter-otlp-proto-grpc>=1.29.0",
+    "prometheus-client>=0.24.1",
+]
+
+[dependency-groups]
+dev = [
+    "basedpyright>=1.36.1",
+    "hatch>=1.16.2",
+    "mypy>=1.19.1",
+    "ruff>=0.14.9",
+    "rust-just>=1.45.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+skip-excluded-dirs = true
+
+[tool.hatch.build.targets.wheel]
+only-packages = true
+packages = ["ai_service"]
+
+[tool.hatch.version]
+path = "ai_service/__version__.py"
+
+[tool.uv]
+package = true
+
+[tool.basedpyright]
+venvPath = "."
+venv = ".venv"
+pythonVersion = "3.13"
+pythonPlatform = "Linux"
+reportMissingImports = "error"
+reportMissingTypeStubs = false
+reportUnknownMemberType = false
+reportUnusedParameter = "warning"
+exclude = ["**/.venv", "**/__pycache__", "gateway_api", "external_clients", "alembic", "ai_service/tests", "scripts"]
+typeCheckingMode = "recommended"
+
+[tool.mypy]
+exclude = [".*_test.py", "gateway_api", "external_clients", "scripts"]
+plugins = "pydantic.mypy"
+
+[tool.ruff]
+exclude = [".venv", "gateway_api", "external_clients", "scripts"]
+force-exclude = true
+line-length = 120
+indent-width = 4
+target-version = "py313"
+fix = true
+
+[tool.ruff.format]
+preview = true
+
+[tool.ruff.lint]
+select = ["ALL"]
+fixable = ["ALL"]
+ignore = ["ANN", "D", "EM101", "RUF001", "BLE001", "SIM103", "TRY003", "ISC003", "COM812", "RUF003", "RUF002", "TRY301", "TC001"]
+unfixable = []
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402", "F401", "TID252", "PLC0414"]
+"**/{tests,docs,tools}/*" = ["E402"]
+"ai_service/tests/**/*" = ["S101"]
+"*_test.py" = ["ANN", "S", "S101", "TRY", "PGH003", "FBT", "PT012", "N801", "ARG002", "SLF001", "PLR", "SIM"]
+"alembic/*" = ["INP001"]
+"gateway_api/**" = ["ERA001", "E501", "SLF001", "TC004", "N802"]
+"api/**" = ["ERA001", "E501", "SLF001", "TC004", "N802"]
+
+[tool.pytest.ini_options]
+pythonpath = "."
+testpaths = ["ai_service", "ai_service/tests"]
+addopts = []
+filterwarnings = ["ignore::DeprecationWarning"]
+python_files = ["*_test.py", "test_*.py"]
+python_classes = "Test_*"
+asyncio_mode = "auto"

@@ -1,0 +1,52 @@
+debug = false
+
+[grpc_server]
+host = "0.0.0.0"
+port = 50056
+
+[postgres]
+host = "localhost"
+port = 5433
+username = "postgres"
+password = "postgres"
+database = "profile_service"
+should_log_sql = false
+pool_size = 10
+pool_max_overflow = 20
+
+[rabbitmq]
+host = "localhost"
+port = 5672
+username = "guest"
+password = "guest"
+vhost = "/"
+
+[minio]
+endpoint = "localhost:9000"
+access_key = "minioadmin"
+secret_key = "minioadmin"
+bucket = "profiles"
+secure = false
+
+[openai]
+enabled = true
+api_key = ""
+provider = "openrouter"
+model = "qwen/qwen-2.5-72b-instruct"
+bio_model = ""
+nsfw_model = "openai/gpt-4.1-mini"
+embedding_model = "openai/text-embedding-3-small"
+embedding_dimensions = 1536
+base_url = "https://openrouter.ai/api/v1"
+app_name = "dating-bot-ai-service"
+site_url = ""
+timeout_seconds = 15
+circuit_breaker_enabled = true
+circuit_breaker_failure_threshold = 5
+circuit_breaker_recovery_timeout_seconds = 30
+circuit_breaker_half_open_success_threshold = 2
+
+[ai]
+nsfw_threshold = 0.7
+embedding_size = 1536
+low_confidence_threshold = 0.6

@@ -1,0 +1,53 @@
+services:
+  ai_server:
+    build: .
+    container_name: ai_service
+    command: ["uv", "run", "python3", "-m", "ai_service.app.server"]
+    ports:
+      - "50056:50051"
+    volumes:
+      - ./config.docker.toml:/app/config.toml:ro
+    networks:
+      - dating_bot_net
+    external_links:
+      - dating_bot_rabbitmq:rabbitmq
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-http://otel-collector:4317}
+      OTEL_EXPORTER_OTLP_INSECURE: ${OTEL_EXPORTER_OTLP_INSECURE:-true}
+      OTEL_SERVICE_NAME: ${OTEL_SERVICE_NAME:-ai-service}
+    healthcheck:
+      test: ["CMD", "grpc_health_probe", "-addr=:50051"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  ai_celery:
+    build: .
+    container_name: ai_celery
+    command:
+      [
+        "sh",
+        "-c",
+        "rm -rf /tmp/ai_service_prometheus && mkdir -p /tmp/ai_service_prometheus && export PROMETHEUS_MULTIPROC_DIR=/tmp/ai_service_prometheus && uv run python3 /app/ai_service/app/metrics_server.py & exec uv run celery -A ai_service.app.celery worker --loglevel=info -Q ai_tasks",
+      ]
+    volumes:
+      - ./config.docker.toml:/app/config.toml:ro
+    expose:
+      - "9109"
+    networks:
+      dating_bot_net:
+        aliases:
+          - ai-celery
+    external_links:
+      - dating_bot_valkey:valkey
+    environment:
+      - CELERY_BROKER_URL=redis://valkey:6379/1
+      - AI_SERVICE_METRICS_PORT=9109
+      - OTEL_EXPORTER_OTLP_ENDPOINT=${OTEL_EXPORTER_OTLP_ENDPOINT:-http://otel-collector:4317}
+      - OTEL_EXPORTER_OTLP_INSECURE=${OTEL_EXPORTER_OTLP_INSECURE:-true}
+      - OTEL_SERVICE_NAME=${OTEL_SERVICE_NAME:-ai-service-celery}
+
+networks:
+  dating_bot_net:
+    external: true
+    name: dating_bot_net

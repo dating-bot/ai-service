@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package gateway_api.v1;
+
+// Keep this file self-contained: no `import` of other .proto, so `gateway_pb2` loads in any image
+// without bundling match/profile/ranking descriptor deps. Inbound gRPC to profile/ranking/match
+// uses the original service names; see `grpc_inbound_proxies.py` on the same gRPC port.
+service GatewayService {
+  rpc Ping(PingRequest) returns (PingResponse);
+}
+
+message PingRequest {}
+
+message PingResponse {
+  string message = 1;
+}

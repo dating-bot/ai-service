@@ -1,0 +1,8 @@
+from ai_service.adapters.embeddings.openai import OpenAIEmbeddingAdapter as OpenAIEmbeddingAdapter
+from ai_service.adapters.embeddings.simple import DeterministicEmbeddingAdapter as DeterministicEmbeddingAdapter
+from ai_service.adapters.llm.openai_adapter import OpenAIBioAnalyzerAdapter as OpenAIBioAnalyzerAdapter
+from ai_service.adapters.nsfw.detector import HeuristicNSFWDetectorAdapter as HeuristicNSFWDetectorAdapter
+from ai_service.adapters.nsfw.openai_detector import OpenAINSFWDetectorAdapter as OpenAINSFWDetectorAdapter
+from ai_service.adapters.postgres import Base as Base
+from ai_service.adapters.postgres import PostgresAIRepositoryAdapter as PostgresAIRepositoryAdapter
+from ai_service.adapters.rabbitmq.publisher import RabbitMQEventPublisherAdapter as RabbitMQEventPublisherAdapter

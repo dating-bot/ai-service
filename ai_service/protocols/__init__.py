@@ -1,0 +1,5 @@
+from ai_service.protocols.analysis import BioAnalyzerProtocol as BioAnalyzerProtocol
+from ai_service.protocols.embedding import EmbeddingGeneratorProtocol as EmbeddingGeneratorProtocol
+from ai_service.protocols.nsfw import NSFWDetectorProtocol as NSFWDetectorProtocol
+from ai_service.protocols.publisher import EventPublisherProtocol as EventPublisherProtocol
+from ai_service.protocols.repository import AIRepositoryProtocol as AIRepositoryProtocol
